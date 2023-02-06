@@ -1,0 +1,8 @@
++++
+title = "Welcome to my page!"
+description = "I am Kåre and here I'll talk about everything from parallell algorithms to rock climbing"
++++
+
+I've been inspired by some cool people to create my own website, mainly to be able to try writing some blogs. It would be super cool if someone will read them, but I don't have high hopes for that. But if you do and have any feedback or want to chat about something, please send an email or something :D I really enjoy talking to people about stuff I enjoy, which I guess is quite normal.
+
+One of the reasons I haven't created a website before is that I have a rather unmotivated disdain of everything relating to web development. The reason I could bring myself to finally do this is that my friend recommended the [Zola](https://www.getzola.org/) framework and convinced me that I then would only have to write some extended markdown. Furthermore it is written in Rust, which is always a plus. We will see to what extent I can keep away from horrors such as HTML and CSS...
