@@ -5,14 +5,14 @@ date=2022-02-14
 
 [taxonomies]
 categories = ["Research summary"]
-tags = ["paper", "stream data"]
+tags = ["research", "stream data"]
 
 [extra]
 toc = true
 +++
 
 <!-- Introduction is a WIP -->
-Big data streams are everywhere today as we get increasingly digital, as well as taking more and more automated measurements. An example could be search queries with an internet search engine, where the provider would want to analyze search patterns. It is often preferable to process these streams online, meaning we don't store the data and only make one pass over it. Some metrics such as variance are possible to compute like this, but for many others you have to give up some information, making the results only approximately true (do you remember your epsilon delta proofs?). 
+Big data streams are everywhere today as we get increasingly digital, as well as taking more and more automated measurements. An example could be search queries with an internet search engine, where the provider would want to analyze search patterns, such as common searches. It is often preferable to process these streams online, meaning we don't store the data and only make one pass over it. Some metrics such as variance are possible to compute like this, but for many others you have to give up some required information, making the results only approximately true (do you remember your epsilon delta proofs?). 
 
 This post gives an introduction to the topic of finding frequent items in data streams using these online algorithms. It is mainly based on the papers [_Methods for Finding Frequent Items in Data Streams_](http://dimacs.rutgers.edu/~graham/pubs/papers/freqvldbj.pdf) as well as [_What’s New: Finding Significant Differences in Network Data Streams_](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1561219) with _Graham Cormode_ being first author for both. The first gives an overview of all methods, while the second is needed to fully understand the last one.
 
@@ -20,42 +20,42 @@ This post gives an introduction to the topic of finding frequent items in data s
 
 Apart from having to do only one pass over the input, we are also required to use memory strictly sublinear to the input size. Otherwise all the information in the stream could just be saved and the exact result always found... 
 
-The streaming problem studied in this paper is the frequent item problem which the first paper describe like this.
->  Informally, given a sequence of items, the problem is simply to find those items which occur most frequently. Typically, this is formalized as finding all items whose frequency exceeds a specified fraction of the total number of items. Variations arise when the items are given weights, and further when these weights can also be negative.
+The streaming problem studied here is the frequent item problem which the first paper describe like this.
+>  Informally, given a sequence of items, the problem is simply to find those items which occur most frequently. Typically, this is formalized as finding all items whose frequency exceeds a specified fraction [(φ)] of the total number of items. Variations arise when the items are given weights, and further when these weights can also be negative.
 
 To solve this problem in a generic way you need to use memory linear to the input size, but since we don't want that they formulate the ε-approximate frequent item problem as finding a set of items all having frequency larger than (φ − ε), and that all items with frequency larger than φ must be included in the set.
 
-A related problem it that of frequency estimation and requires you to be able to estimate the frequency of any item, at any time, with an error of at most ε. In theory a solution to this problem also solves the ε-approximate frequent item problem, as you can iterate over all possible inputs (if it's a finite input space).
+A related problem it that of frequency estimation and requires you to be able to estimate the frequency of any item, with an error of at most ε. In theory a solution to this problem also solves the ε-approximate frequent item problem, as you can iterate over all possible inputs (if it's a finite input space). But of course it would be a very slow solution, so the last part of the post presents some other ways to generalize between the problems.
 
 
 ## Counter based algorithms
 
-The paper presents three different groups of algorithms for the problem, and the counter based ones are the simplest, keeping a fixed set of counters in some way associated with items in the stream. When a new item is read they decide if it should be kept, and what counts it is associated with.
+The first paper presents three different groups of algorithms for the problem, and the counter based ones are the simplest, keeping a fixed set of counters in some way associated with items in the stream. When a new item is read the algorithm decides if it should be kept, and what counts it is associated with.
 
 ### The Frequent Algorithm
 
-This is the most basic counter algorithm but displays the base idea brilliantly. It has a set of **k - 1** counters associated with one item each and the idea is that if an item has a frequency of higher than **|items|/k** it will be associated with one of the counters. For every new item it increments its counter if it has one, or else assigns it an unused counter, or otherwise decrements all other counters. If a counter is 0 it is considered to be unused.
+This is the most basic counter algorithm but displays the base idea brilliantly. It has a set of **k - 1** counters associated with one item each, and the idea is that if an item has a frequency of higher than **|items|/k** it will be associated with one of the counters. For every new item it increments its counter if it has one, or else assigns it an unused counter, or otherwise decrements all other counters. If a counter is 0 it is considered to be unused.
 
 ``` rust
-for i ∈ items
-    inc(n)
-    if i ∈ T
-        inc(counters[i])
+for i in items
+    n += 1
+    if i in T
+        counters[i] += 1
     else if |T| < k - 1
-        T ← T ∪ {i}
-        counters[i] ← 1
+        T.add(i)
+        counters[i] = 1
     else
-        for j ∈ T
-            dec(counters[j])
+        for j in T
+            counters[j] -= 1
             if counters[j] = 0
-                T ← T \ j
+                T.remove(j)
 ```
 
 The problem with this is that it will contain false positives. Since if there are not **k-1** elements with frequency larger than **|items|/k**, the counters will still have a large chance of being in use at the end. Since we are only allowed one pass over the data we can't verify which of the found items are actually common. But if there are sufficiently frequent items they will be found and the simplicity of the algorithm is impressive.
 
 ## Quantile algorithms
 
-These algorithms are about finding the φ-quantiles, which can be seen as a slightly different problem to the frequent items one, but a bit more general. It is helpful to define the rank of an item to the sum of the frequencies of all less frequent items. The ε-approximate problem then allows εn uncertainty in ranks for the quantiles.
+These algorithms are about finding the φ-quantiles, which can be seen as a slightly different problem to the frequent items one, but a bit more general. It is helpful to define the rank of an item as the sum of the frequencies of all less frequent items. The ε-approximate problem then allows **εn** uncertainty in ranks for the quantiles.
 
 ### The GK Algorithm
 
@@ -67,7 +67,7 @@ Every new item is initialized with **g = 1** and **Δ = ⌊εn⌋** and then con
 
 ## Sketch algorithms
 
-The idea of the sketches in this paper is to use several hash functions on each input and use them to index into a matrix of counts. Each row in the matrix (or sketch) has one hash function which uniformly distributes inputs over the columns. This process can also be seen as a linear projection of the implicit vector of item frequencies in the input stream, making for a nice mathematical expression, and is the more general definition of a sketch.
+The idea of the sketches in the papers is to use several hash functions on each input and use them to index into a matrix of counts. Each row in the matrix (or sketch) has one hash function which uniformly distributes inputs over the columns. This process can also be seen as a linear projection of the implicit vector of item frequencies in the input stream, making for a nice mathematical expression, and is the more general definition of a sketch.
 
 ![CountMin sketch](./CountMinWhite.png "The CountMin Sketch")
 
@@ -145,7 +145,7 @@ for candidate in candidates
 
 ## Conclusion
 
-I think the papers had some cool ideas. The counter methods are very simple and fast which is nice. But the simple idea behind the CountMin sketch is as usual very nice. In general the sketch methods catch my fancy every time.
+I think the papers have some cool ideas. The counter methods are very simple and fast which is nice. But the simple idea behind the CountMin sketch is as usual very nice. In general the sketch methods catch my fancy every time.
 
 The Group testing was a quite nice idea, and I hope it was understandable. I must say I found the article incredibly hard to read and grasp. So even though the idea is nice, it now has some extra negative memories for me (for example, why use the word group for both columns and buckets Cormode?). 
 
