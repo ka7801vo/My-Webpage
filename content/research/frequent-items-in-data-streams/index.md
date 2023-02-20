@@ -1,5 +1,5 @@
 +++
-title="Introduction to Data Streams and Frequencies"
+title="Frequent Items in Data Streams"
 description="An introduction to stream processing and the frequent item problem. We look at three algorithm types, but mainly on the nice idea of sketches."
 date=2022-02-17
 

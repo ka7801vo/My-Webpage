@@ -3,11 +3,18 @@ base_url = "https://khorium-site.netlify.app"
 
 theme = "DeepThought"
 
+# The site title and description; used in feeds by default.
+title = "Kåre von Geijer"
+description = "My personal website, mainly containing some blog posts"
+
+# The default language; used in feeds.
+default_language = "en"
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
 # Whether to build a search index to be used later on by a JavaScript library
-build_search_index = false
+build_search_index = true
 
 # Taken from the Theme
 taxonomies = [
@@ -33,8 +40,8 @@ galleria.enabled = true
 navbar_items = [
  { code = "en", nav_items = [
   { url = "$BASE_URL/", name = "Home" },
-  { url = "$BASE_URL/posts", name = "Posts" },
-  { url = "$BASE_URL/papers", name = "Papers" },
+  { url = "$BASE_URL/blog", name = "Blog" },
+  { url = "$BASE_URL/research", name = "Research" },
   { url = "$BASE_URL/tags", name = "Tags" },
 #  { url = "$BASE_URL/categories", name = "Categories" },
  ]},
