@@ -100,7 +100,7 @@ This idea is used in other frameworks as well, but the big problem is that it ca
 
 If the input domain is finite and can be enumerated efficiently we can use an approximation of the idea shown in the figure below. Each item in the input domain is represented by a leaf containing the count of the value in the stream. Each node contains the count of all leafs below. It then becomes quite simple to do a divide and conquer search to find all items/leafs more frequent than a certain threshold.
 
-![Tree of sketches](./tree-of-sketches.png "Tree of sketches")
+![Tree of sketches](./tree-of-sketches.png "Implicit tree of counts")
 
 Although nice, it becomes very unwieldy to have that many nodes. An approximate version replaces each layer in the tree by a sketch encoding the same information. The bottommost layer is the normal sketch of approximate item counts. The middle layers don't encode node counts, but instead like the implicit nodes they contain the approximate counts of the ranges of items.
 
