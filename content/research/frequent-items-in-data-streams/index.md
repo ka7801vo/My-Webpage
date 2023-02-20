@@ -11,10 +11,9 @@ tags = ["research", "stream data"]
 toc = true
 +++
 
-<!-- Introduction is a WIP -->
 Big data streams are everywhere today as we get increasingly digital, as well as taking more and more automated measurements. An example could be search queries with an internet search engine, where the provider would want to analyze search patterns, such as common searches. It is often preferable to process these streams online, meaning we don't store the data and only make one pass over it. Some metrics such as variance are possible to compute like this, but for many others you have to give up some required information, making the results only approximately true (do you remember your epsilon delta proofs?). 
 
-This post gives an introduction to the topic of finding frequent items in data streams using these online algorithms. It is mainly based on the papers [_Methods for Finding Frequent Items in Data Streams_](http://dimacs.rutgers.edu/~graham/pubs/papers/freqvldbj.pdf) as well as [_What’s New: Finding Significant Differences in Network Data Streams_](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1561219) with _Graham Cormode_ being first author for both. The first gives an overview of all methods, while the second is needed to fully understand the last one.
+This post gives an introduction to the topic of finding frequent items in data streams using these online algorithms. It is mainly based on the papers [_Methods for Finding Frequent Items in Data Streams_](http://dimacs.rutgers.edu/~graham/pubs/papers/freqvldbj.pdf) as well as [_What’s New: Finding Significant Differences in Network Data Streams_](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1561219) with _Graham Cormode_ being first author for both. The first gives an overview of all methods, while the second is needed to fully understand the last one. The sections about specific algorithms have links to the originating paper as well.
 
 ## Problem description
 
@@ -32,7 +31,7 @@ A related problem it that of frequency estimation and requires you to be able to
 
 The first paper presents three different groups of algorithms for the problem, and the counter based ones are the simplest, keeping a fixed set of counters in some way associated with items in the stream. When a new item is read the algorithm decides if it should be kept, and what counts it is associated with.
 
-### The Frequent Algorithm
+### [The Frequent Algorithm](https://dl.acm.org/doi/10.1145/762471.762473)
 
 This is the most basic counter algorithm but displays the base idea brilliantly. It has a set of **k - 1** counters associated with one item each, and the idea is that if an item has a frequency of higher than **|items|/k** it will be associated with one of the counters. For every new item it increments its counter if it has one, or else assigns it an unused counter, or otherwise decrements all other counters. If a counter is 0 it is considered to be unused.
 
@@ -57,7 +56,7 @@ The problem with this is that it will contain false positives. Since if there ar
 
 These algorithms are about finding the φ-quantiles, which can be seen as a slightly different problem to the frequent items one, but a bit more general. It is helpful to define the rank of an item as the sum of the frequencies of all less frequent items. The ε-approximate problem then allows **εn** uncertainty in ranks for the quantiles.
 
-### The GK Algorithm
+### [The GK Algorithm](https://dl.acm.org/doi/10.1145/376284.375670)
 
 The base idea is similar to the one for counters, where it keeps counts for a subset of the items it determines important. But here it does not only need the frequent items, but items everywhere to cover quantiles. It it cool, but if it is too unintuitive I recommend just skipping to the cool sketch algorithm!
 
@@ -75,13 +74,13 @@ Sketch algorithms solve the frequency estimation problem and need some extra con
 
 A nice thing with sketches is that they easily can be adopted to have general weights, even negative. This is not possible with the other methods. They are also often easy to merge, making parallelization possible which I enjoy.
 
-### The CountMin Sketch
+### [The Count-Min Sketch](https://dl.acm.org/doi/10.1016/j.jalgor.2003.12.001)
 
 This simle sketch keeps a matrix with one hash function per row as described above. Each arriving item in the stream is hashed by all hash functions, associating it with one column per row. Then all those associated counters are incremented by one, as shown in the image above.
 
 To estimate the frequency of an item you then also use all hash functions but instead take the minimum of all the queried counters. This will always overestimate the count, but given an adequately sized matrix you can give a nice epsilon delta proof of the expected error.
 
-### The Count Sketch
+### [The Count Sketch](https://dl.acm.org/doi/10.5555/646255.684566)
 
 This is very similar to the CountMin sketch, but now each row has an extra hash function which hashes each function between -1 and 1. Instead of incrementing counters by 1 it now adds the extra hashed value.
 
@@ -91,13 +90,13 @@ To then query the sketch you for each row divide the associated counter with the
 
 These sketches solves the problem of estimating the count of items, but not of finding the most frequent items in an efficient way. There are some different ways to do this, but mainly three that are suggested by the author.
 
-#### Heap testing
+#### [Heap testing](https://dl.acm.org/doi/10.5555/646255.684566)
 
 This method is the simplest and keeps a heap of **k** items and their approximate counts beside the sketch. The heap is maintained so to contain the most frequent items by checking their approximate counts as they are incremented.
 
 This idea is used in other frameworks as well, but the big problem is that it cannot really handle when streams removes items (negative weights). But otherwise it is simple and nice.
 
-#### Hierarchy testing
+#### [Hierarchy testing](https://dl.acm.org/doi/10.1016/j.jalgor.2003.12.001)
 
 If the input domain is finite and can be enumerated efficiently we can use an approximation of the idea shown in the figure below. Each item in the input domain is represented by a leaf containing the count of the value in the stream. Each node contains the count of all leafs below. It then becomes quite simple to do a divide and conquer search to find all items/leafs more frequent than a certain threshold.
 
@@ -106,7 +105,7 @@ If the input domain is finite and can be enumerated efficiently we can use an ap
 Although nice, it becomes very unwieldy to have that many nodes. An approximate version replaces each layer in the tree by a sketch encoding the same information. The bottommost layer is the normal sketch of approximate item counts. The middle layers don't encode node counts, but instead like the implicit nodes they contain the approximate counts of the ranges of items.
 
 
-#### Group testing
+#### [Group testing](https://dl.acm.org/doi/10.1109/TNET.2005.860096)
 
 This method is similar to the hierarchical testing above, but the hierarchy is achieved by increasing the dimension of the sketch to three. The depth in the new dimension is one plus the number of bits in the input domain. Then they also keep a normal 2D sketch as well, which is a little bit bigger than the 3D one in the first two dimensions. The explanations here are for CountMin sketches, but others can be used as well. (I wanted to add a figure here, but my app crashed and lost me 30 minutes of progress...)
 
@@ -145,8 +144,6 @@ for candidate in candidates
 
 ## Conclusion
 
-I think the papers have some cool ideas. The counter methods are very simple and fast which is nice. But the simple idea behind the CountMin sketch is as usual very nice. In general the sketch methods catch my fancy every time.
+I think the papers have some cool ideas. The counter methods are very simple and fast which is nice. But the simple idea behind the CountMin sketch is very pretty, even though a bit slower. In general the sketch methods catch my fancy every time.
 
-The Group testing was a quite nice idea, and I hope it was understandable. I must say I found the article incredibly hard to read and grasp. So even though the idea is nice, it now has some extra negative memories for me (for example, why use the word group for both columns and buckets Cormode?). 
-
-Although, even though the sketches are nice, they do have a very big overhead it feels like. Furthermore they really need their input to be in an enumerable, preferably dense, domain. This makes them a bit frustrating, but it is hard to change as they were designed for the frequency estimation problem.
+However, even though the sketches are nice, the two last methods have a big overhead cost, and lack the simplicity of normal sketches. Furthermore, they really need their input to be in an enumerable, preferably dense, domain. This makes them a bit frustrating, but it is hard to change as the base sketches were designed for the frequency estimation problem.

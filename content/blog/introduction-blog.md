@@ -3,7 +3,7 @@ title="What's this?"
 date=2022-02-18
 
 [taxonomies]
-categories = ["blog"]
+categories = ["Blog"]
 tags = ["rambling", "introduction"]
 
 [extra]
@@ -20,7 +20,7 @@ So when Samuel said he found this static website generator written in Rust calle
 
 ## Shoutouts
 
-I would not have done this if I was not inspired by some really cool people, so let's give them some shout outs (in this place nobody will read xD)! First is of course [Samuel](https://www.linkedin.com/in/samuel-selleck-027a41150/) who was the main motivator, and inspires me all the time to do cool stuff and make the best of life. At the same time [Finn](https://www.linkedin.com/in/finnplum) showed me the joy of coding and how much more fulfilling it actually is to do stuff than procrastinating. I will also shout out [Betaveros](https://beta.vero.site/) whose [complete crush](https://adventofcode.com/2022/leaderboard) of Advent of Code 2022 with his [own language](https://github.com/betaveros/noulith) showed me how much there is to learn. To go from admiring his times on the leaderboard to reading his thoughts on his blog was cool, who knows if I can have that effect on someone someday. Finally [Jon Gjengset](https://www.youtube.com/@jonhoo) shows that more advanced coding can be done very well online, and he just seems so reasonable.
+I would not have done this if I was not inspired by some really cool people, so let's give them some shout outs! First is of course [Samuel](https://www.linkedin.com/in/samuel-selleck-027a41150/) who was the main motivator, and inspires me all the time to do cool stuff and make the best of life. At the same time [Finn](https://www.linkedin.com/in/finnplum) showed me the joy of coding and how much more fulfilling it actually is to do stuff than procrastinating. I will also shout out [Betaveros](https://beta.vero.site/) whose [complete crush](https://adventofcode.com/2022/leaderboard) of Advent of Code 2022 with his [own language](https://github.com/betaveros/noulith) showed me how much there is to learn. To go from admiring his times on the leaderboard to reading his thoughts on his blog was cool, who knows if I can have that effect on someone someday. Finally [Jon Gjengset](https://www.youtube.com/@jonhoo) shows that more advanced coding can be done very well online, and he just seems so reasonable.
 
 # So what will the website contain?
 
