@@ -5,7 +5,7 @@ date=2022-02-17
 
 [taxonomies]
 categories = ["Research summary"]
-tags = ["research", "stream data"]
+tags = ["stream data", "sketches"]
 
 [extra]
 toc = true

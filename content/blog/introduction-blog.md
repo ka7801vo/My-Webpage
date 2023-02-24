@@ -12,6 +12,8 @@ toc = true
 
 Welcome to this post and my website in general! Here I aim to ramble a bit about the site and my ideas for what I want to do with it. Let's get rambling :D
 
+<!-- more -->
+
 # Setting up a website
 
 I have had the idea of setting up a website for a while but I never got around to it, until now. I wrote some HTML back in grade school, and I think that even without realizing it my despise for it started back then. Then I also did some HTML, CSS and Javascript in preparation for university (I guess that's what I thought programming was) and it was still tedious. So since then I have always had a disdain for web development and tried to stay away from it at all costs. The feeling of disdain was exaggerated and I am sure there are many interesting problems in web development, as well that it is very useful. But HTML, CSS, JS and some more stuff still gives me the heebie jeebies.
